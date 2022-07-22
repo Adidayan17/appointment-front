@@ -1,7 +1,8 @@
-import {makeStyles, Typography} from "@material-ui/core";
-import {VBox} from "../sharedComponents/CustomBoxs";
+import {Button, makeStyles, Typography} from "@material-ui/core";
+import {VBox,HBox} from "../sharedComponents/CustomBoxs";
 import {Link} from "react-router-dom";
-import React from "react";
+import React, {useState} from "react";
+import Login from "../components/Login"
 // import {CustomAppBar} from "../sharedComponents/CustomAppBar";
 
 
@@ -16,21 +17,26 @@ const useStyles = makeStyles(() => ({
             fontWeight:"bold",
             alignItems:"center"
         },
+        linkList:{
+
+        }
     }
 ));
 
-
-
 const HomePage=()=>{
     const classes=useStyles();
+    const [login, setLogin]= useState(false)
 
     return(
         <VBox>
-            <VBox className={classes.homePage}>
-                <Typography className={classes.title} >פורטל תרגולים </Typography>
-            </VBox>
-            <nav><Link to={'/loginPage'}>Login</Link></nav>
-            <nav><Link to={'/registerPage'}>Sign up</Link></nav>
+            <HBox className={classes.homePage}>
+                <Typography className={classes.title} >ברוכים הבאים למכון היופי ביוטי</Typography>
+            </HBox>
+            <HBox className={classes.linkList} >
+            <nav><Link to={'/registerPage'}>הרשמה</Link></nav>
+            </HBox>
+            <Button onClick={e=>setLogin(true)}>התחברות</Button>
+            {login && <Login setLogin={setLogin}/>}
         </VBox>
     )
 }

@@ -8,7 +8,7 @@ import { CacheProvider } from '@emotion/react';
 import { StylesProvider } from '@material-ui/core/styles';
 
 import {BrowserRouter,Routes,Route} from 'react-router-dom'
-import LoginPage from "./pages/LoginPage"
+import Login from "./components/Login"
 import HomePage from "./pages/HomePage";
 import RegisterPage from "./pages/RegisterPage"
 import MainPage from "./pages/MainPage"
@@ -29,9 +29,9 @@ function App() {
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<HomePage/>}/>
-              <Route path="/loginPage" element={<LoginPage/>}/>
+              <Route path="/loginPage" element={<Login/>}/>
               <Route path="/registerPage" element={<RegisterPage/>}/>
-              <Route path="/mainPage" element={<MainPage/>}/>
+              {/*<Route path="/mainPage" element={<MainPage/>}/>*/}
             </Routes>
           </BrowserRouter>
         </CacheProvider>
