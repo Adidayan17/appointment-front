@@ -1,24 +1,41 @@
-import logo from './logo.svg';
 import './App.css';
 
+import React,{useLayoutEffect} from "react";
+import rtlPlugin from 'stylis-plugin-rtl';
+import createCache from '@emotion/cache';
+import { prefixer } from 'stylis';
+import { CacheProvider } from '@emotion/react';
+import { StylesProvider } from '@material-ui/core/styles';
+
+import {BrowserRouter,Routes,Route} from 'react-router-dom'
+import LoginPage from "./pages/LoginPage"
+import HomePage from "./pages/HomePage";
+import RegisterPage from "./pages/RegisterPage"
+import MainPage from "./pages/MainPage"
+
 function App() {
+
+  useLayoutEffect(() => {
+    document.body.setAttribute("dir", "rtl");
+  }, []);
+  const cacheRtl = createCache({
+    key: "muirtl",
+    stylisPlugins: [prefixer, rtlPlugin]
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <StylesProvider>
+        <CacheProvider value={cacheRtl}>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<HomePage/>}/>
+              <Route path="/loginPage" element={<LoginPage/>}/>
+              <Route path="/registerPage" element={<RegisterPage/>}/>
+              <Route path="/mainPage" element={<MainPage/>}/>
+            </Routes>
+          </BrowserRouter>
+        </CacheProvider>
+      </StylesProvider>
   );
 }
 
