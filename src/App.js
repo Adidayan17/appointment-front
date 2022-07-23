@@ -7,7 +7,8 @@ import { prefixer } from 'stylis';
 import { CacheProvider } from '@emotion/react';
 import { StylesProvider } from '@material-ui/core/styles';
 
-import {BrowserRouter,Routes,Route} from 'react-router-dom'
+import {BrowserRouter} from 'react-router-dom'
+import {Route} from "react-router";
 import Login from "./components/Login"
 import HomePage from "./pages/HomePage";
 import RegisterPage from "./pages/RegisterPage"
@@ -27,12 +28,11 @@ function App() {
       <StylesProvider>
         <CacheProvider value={cacheRtl}>
           <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<HomePage/>}/>
-              <Route path="/loginPage" element={<Login/>}/>
-              <Route path="/registerPage" element={<RegisterPage/>}/>
-              {/*<Route path="/mainPage" element={<MainPage/>}/>*/}
-            </Routes>
+
+              <Route path={"/"} component={HomePage}/>
+              <Route path={"/registerPage"} component={RegisterPage}/>
+              <Route path={"/mainPage"} component={MainPage}/>
+
           </BrowserRouter>
         </CacheProvider>
       </StylesProvider>

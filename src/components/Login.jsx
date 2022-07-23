@@ -3,7 +3,7 @@ import {makeStyles, Typography,TextField,Button} from "@material-ui/core";
 import {VBox,HBox} from "../sharedComponents/CustomBoxs";
 import Cookies from "universal-cookie/es6";
 
-
+import {Redirect} from "react-router";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -23,7 +23,7 @@ const Login=({setLogin})=>{
     const [open, setOpen ]= useState(true)
     const [phoneNumber ,setPhoneNumber ]= useState("")
     const [password ,setPassword ]= useState("")
-
+    const [success ,setSuccess]= useState(false)
     const handleClose = () => {
         setOpen(false);
         setLogin(false);
@@ -35,12 +35,19 @@ const Login=({setLogin})=>{
         }}).then((response)=>{
             let cookies = new Cookies()
             cookies.set("token", response.data)
+            if(response.data) {
+                setSuccess(true)
+            }
+            else {
+                alert("שם משתמש או סיסמא שגויים")
+            }
 
         })
     }
 
     return(
         <VBox>
+            {success&& <Redirect to={"/mainPage"}/>}
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle><Typography className={classes.title} >הזן פרטים</Typography></DialogTitle>
                 <DialogContent>
