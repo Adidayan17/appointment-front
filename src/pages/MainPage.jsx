@@ -17,6 +17,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import { DatePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import axios from "axios";
 
 const useStyles = makeStyles(() => ({
         mainPage : {
@@ -55,49 +56,86 @@ const MainPage =()=>{
     const classes = useStyles();
     const [expanded, setExpanded] =useState(false);
     const [showCard, setShowCard] =useState(false);
+    //const [chosenField, setChosenField] = useState(" ")
+    const [listAvailableAppointment , setListAvailableAppointment] = useState([]);
+    const [employeeList , setEmployeeList] = useState([])
+    const [appointmentEmployee, setAppointmentEmployee] = useState("")
     const [appointmentTime, setAppointmentTime] =useState("");
     const [appointmentDate, setAppointmentDate] =useState("");
     const [cardInfo ,setCardInfo] = useState({title: " ", image :" ", details : " ", appointments :[] });
     let d = new Date();
-
+    let formatDate
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
 
-    const infoCard =(e,name)=>{
+    const infoCard =(e,field)=>{
+
         setShowCard(true);
-        switch (name) {
-            case 1 :
-                setCardInfo({title: "מספרה  ", image: "", details: "אנחנו מספרה ", appointments: [{time:"10",date:"1010"},{time:"113",date:"1010"},{time:"112",date:"1010"}]})
+        axios.get ("http://127.0.0.1:8989/get-employees-by-role",{
+            params:{
+                role: field}
+        }).then((response)=> {
+            setEmployeeList(response.data)
+        })
+
+        switch (field) {
+            case "hair stylist" :
+                setListAvailableAppointment(["08:00","08:30","09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","14:00","14:30","17:00" ])
+                setCardInfo({title: "מספרה  ", image: "", details: "אנחנו מספרה ", appointments: []})
+
                 break;
-            case 2 :
+            case "nail artist" :
+                setListAvailableAppointment(["08:00","09:00","10:00","11:00","12:00","14:00","17:00" ])
                 setCardInfo({title: "ציפורניים  ", image: "", details: "אנחנו ציפוקנייפ  ", appointments: []})
                 break;
-            case 3 :
+            case "eyebrow artist" :
+                setListAvailableAppointment(["08:00","08:15","08:30","09:00","09:15","09:30","10:00","10:15","10:30","11:00","11:15","11:30","12:00","12:15","12:30","14:00","14:15","14:30","17:00" ])
                 setCardInfo({title: "שפם וגבות   ", image: "", details: "אנחנו שפם וגבות  ", appointments: []})
                 break;
         }
     }
 
-    const dateChange=(e)=>{
-        let value
+
+    const dateChange=()=>{
         const date=appointmentDate
         const yyyy = date.getFullYear();
         let mm = date.getMonth() + 1;
         let dd = date.getDate();
         if (dd < 10) dd = '0' + dd;
         if (mm < 10) mm = '0' + mm;
-         value =dd + '-' + mm + '-' + yyyy
-        console.log(value)
+         formatDate =dd + '/' + mm + '/' + yyyy
+    }
 
+    const getEmployeeAppointment =(e)=>{
+        let temp=[],results= listAvailableAppointment
+        dateChange()
+        console.log("the date "+formatDate)
+        axios.get("http://127.0.0.1:8989/get-employees-appointments",{
+            params:{employeeId :appointmentEmployee.id, date:formatDate
+            }
+        }).then((response)=>{
+            response.data.map((appointment)=>
+            temp.push(appointment.startTime)
+            )
+
+            temp.map((temp)=>{
+                return(results=results.filter((time)=>time!==temp))
+            })
+            setCardInfo({...cardInfo ,appointments: results});
+            console.log("res "+results)
+        })
 
     }
+
+
+
 return(
     <VBox className = {classes.mainPage} >
 <Typography>מערכת לקביעת תורים</Typography>
-        <Button onClick={e=>infoCard(e,1)}>מספרה</Button>
-        <Button onClick={e=>infoCard(e,2)}>ציפורניים</Button>
-        <Button onClick={e=>infoCard(e,3)}>שפם / גבות </Button>
+        <Button onClick={e=>infoCard(e,"hair stylist")}>מספרה</Button>
+        <Button onClick={e=>infoCard(e,"nail artist")}>ציפורניים</Button>
+        <Button onClick={e=>infoCard(e,"eyebrow artist")}>שפם / גבות </Button>
 
         <Card className ={classes.card} style={{visibility: showCard? "visible":"hidden" }}>
             <CardHeader
@@ -112,18 +150,37 @@ return(
             <CardContent>
                 <Typography >
                     <VBox>
+                        <Select
+                            className={classes.select}
+                            value={appointmentEmployee}
+                            input={<OutlinedInput />}
+                            onChange={ e=>setAppointmentEmployee(e.target.value)}
+
+                        >
+                            {employeeList.map((employee,i) => (
+                                <MenuItem
+                                    key={i}
+                                    value={employee}>
+                                    {employee.employeeName}
+                                </MenuItem>
+
+                            ))}
+                        </Select>
+                    {/*<Button onClick={e=>getEmployeeAppointment(e)} disabled={appointmentEmployee.length===0}>לרשימת התורים</Button>*/}
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DatePicker
                                 disablePast={true}
                                 value={appointmentDate}
                                 inputFormat="dd/MM/yyyy"
-                                onAccept={(e)=>dateChange(e)}
                                 onChange={(newValue)=>{setAppointmentDate(newValue);}}
                                 renderInput={(params) => <TextField {...params}  className={classes.datePicker}/>}
                                 maxDate={ d.setMonth(d.getMonth() +6)}
                             />
                     </LocalizationProvider>
-                    <Select
+
+                        <Button onClick={e=>getEmployeeAppointment(e)} disabled={appointmentEmployee.length===0}>לרשימת התורים</Button>
+
+                        <Select
                         className={classes.select}
                         value={appointmentTime}
                         input={<OutlinedInput />}
@@ -134,7 +191,7 @@ return(
                             <MenuItem
                                 key={i}
                                 value={appointment}>
-                                {appointment.time}
+                                {appointment}
                                 {/*change to start time */}
                             </MenuItem>
                         ))}
