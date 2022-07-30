@@ -14,6 +14,21 @@ import axios from "axios";
 
 
 const useStyles = makeStyles(() => ({
+        RemoveTextFieldNumberArrow: {
+            '&.MuiOutlinedInput-input': {
+                '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
+                    '-webkit-appearance': 'none !important'
+                }
+            }
+        },   title: {
+            color: "#3f51b5",
+            fontSize: "2rem",
+            fontWeight: "bold",
+            alignItems: "center"
+        },
+        dialog:{
+
+        }
 
     }
 ));
@@ -37,6 +52,7 @@ const Login=({setLogin})=>{
             cookies.set("token", response.data)
             if(response.data) {
                 setSuccess(true)
+                setLogin(false)
             }
             else {
                 alert("שם משתמש או סיסמא שגויים")
@@ -48,21 +64,24 @@ const Login=({setLogin})=>{
     return(
         <VBox>
             {success&& <Redirect to={"/mainPage"}/>}
-            <Dialog open={open} onClose={handleClose}>
+            <Dialog open={open} onClose={handleClose} className={classes.dialog}>
                 <DialogTitle><Typography className={classes.title} >הזן פרטים</Typography></DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
+                        className={classes.RemoveTextFieldNumberArrow}
                         label="מספר טלפון"
                         type="number"
                         value = {phoneNumber}
                         onChange={e=>setPhoneNumber(e.target.value)}
+
                     />
                     <TextField
                         label="סיסמה"
                         type="text"
                         value = {password}
                         onChange={e=>setPassword(e.target.value)}
+
                     />
                 </DialogContent>
                 <DialogActions>

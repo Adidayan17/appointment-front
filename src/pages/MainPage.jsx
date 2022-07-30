@@ -1,7 +1,7 @@
 
 import {makeStyles, TextField, Button, Typography} from "@material-ui/core";
-import {VBox,HBox} from "../sharedComponents/CustomBoxs";
-import React, {useState} from "react"
+import {VBox} from "../sharedComponents/CustomBoxs";
+import React, {useEffect, useState} from "react"
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -18,6 +18,11 @@ import { DatePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import axios from "axios";
+import HAIR from '../assets/HAIR.jpg'
+import Cookies from "universal-cookie/es6";
+
+import {Link} from "react-router-dom";
+
 
 const useStyles = makeStyles(() => ({
         mainPage : {
@@ -56,22 +61,29 @@ const MainPage =()=>{
     const classes = useStyles();
     const [expanded, setExpanded] =useState(false);
     const [showCard, setShowCard] =useState(false);
-    //const [chosenField, setChosenField] = useState(" ")
     const [listAvailableAppointment , setListAvailableAppointment] = useState([]);
     const [employeeList , setEmployeeList] = useState([])
     const [appointmentEmployee, setAppointmentEmployee] = useState("")
     const [appointmentTime, setAppointmentTime] =useState("");
     const [appointmentDate, setAppointmentDate] =useState("");
+    const [disable, setDisable] =useState(false);
+
     const [cardInfo ,setCardInfo] = useState({title: " ", image :" ", details : " ", appointments :[] });
     let d = new Date();
     let formatDate
+
+
+
+
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
-
     const infoCard =(e,field)=>{
-
+        setAppointmentDate("");
+        setAppointmentEmployee("");
+        setAppointmentTime("");
         setShowCard(true);
+       setDisable(false)
         axios.get ("http://127.0.0.1:8989/get-employees-by-role",{
             params:{
                 role: field}
@@ -82,16 +94,17 @@ const MainPage =()=>{
         switch (field) {
             case "hair stylist" :
                 setListAvailableAppointment(["08:00","08:30","09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","14:00","14:30","17:00" ])
-                setCardInfo({title: "מספרה  ", image: "", details: "אנחנו מספרה ", appointments: []})
+                setCardInfo({title: "מספרה  ", image: HAIR, details: "אנחנו מספרה ", appointments: []})
+
 
                 break;
             case "nail artist" :
                 setListAvailableAppointment(["08:00","09:00","10:00","11:00","12:00","14:00","17:00" ])
-                setCardInfo({title: "ציפורניים  ", image: "", details: "אנחנו ציפוקנייפ  ", appointments: []})
+                setCardInfo({title: "ציפורניים  ", image: HAIR, details: "אנחנו ציפורניים  ", appointments: []})
                 break;
             case "eyebrow artist" :
                 setListAvailableAppointment(["08:00","08:15","08:30","09:00","09:15","09:30","10:00","10:15","10:30","11:00","11:15","11:30","12:00","12:15","12:30","14:00","14:15","14:30","17:00" ])
-                setCardInfo({title: "שפם וגבות   ", image: "", details: "אנחנו שפם וגבות  ", appointments: []})
+                setCardInfo({title: "שפם וגבות   ", image:HAIR, details: "אנחנו שפם וגבות  ", appointments: []})
                 break;
         }
     }
@@ -108,30 +121,62 @@ const MainPage =()=>{
     }
 
     const getEmployeeAppointment =(e)=>{
+        setAppointmentTime("")
         let temp=[],results= listAvailableAppointment
-        dateChange()
-        console.log("the date "+formatDate)
-        axios.get("http://127.0.0.1:8989/get-employees-appointments",{
-            params:{employeeId :appointmentEmployee.id, date:formatDate
-            }
-        }).then((response)=>{
-            response.data.map((appointment)=>
-            temp.push(appointment.startTime)
-            )
 
-            temp.map((temp)=>{
-                return(results=results.filter((time)=>time!==temp))
+            dateChange()
+
+            setDisable(true)
+            axios.get("http://127.0.0.1:8989/get-employees-appointments", {
+                params: {
+                    employeeId: appointmentEmployee.id, date: formatDate
+                }
+            }).then((response) => {
+                response.data.map((appointment) =>
+                    temp.push(appointment.startTime)
+                )
+                const now =new Date().getHours()
+
+                console.log(now )
+                console.log(parseInt("10:00")>now)
+                temp.map((temp) => {
+                        return (
+                            results = results.filter(time =>{
+                                return ( time !== temp)
+                            })
+                        )
+
+
+
+                })
+                setCardInfo({...cardInfo, appointments: results});
+
             })
-            setCardInfo({...cardInfo ,appointments: results});
-            console.log("res "+results)
-        })
 
+
+
+    }
+
+    const makeAppointment =()=>{
+        let data = new FormData();
+        setDisable(false)
+        dateChange()
+        const cookies =new Cookies()
+        const token =cookies.get("token")
+        data.append("token",token )
+        data.append("employeeId",appointmentEmployee.id )
+        data.append("date",formatDate)
+        data.append("startTime",appointmentTime)
+        axios.post("http://127.0.0.1:8989/add-appointment",data).then((response)=>{
+          alert(" התור נקבע בהצלחה ")
+        })
     }
 
 
 
 return(
     <VBox className = {classes.mainPage} >
+
 <Typography>מערכת לקביעת תורים</Typography>
         <Button onClick={e=>infoCard(e,"hair stylist")}>מספרה</Button>
         <Button onClick={e=>infoCard(e,"nail artist")}>ציפורניים</Button>
@@ -155,6 +200,7 @@ return(
                             value={appointmentEmployee}
                             input={<OutlinedInput />}
                             onChange={ e=>setAppointmentEmployee(e.target.value)}
+                            disabled={disable}
 
                         >
                             {employeeList.map((employee,i) => (
@@ -163,10 +209,8 @@ return(
                                     value={employee}>
                                     {employee.employeeName}
                                 </MenuItem>
-
                             ))}
                         </Select>
-                    {/*<Button onClick={e=>getEmployeeAppointment(e)} disabled={appointmentEmployee.length===0}>לרשימת התורים</Button>*/}
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DatePicker
                                 disablePast={true}
@@ -175,11 +219,12 @@ return(
                                 onChange={(newValue)=>{setAppointmentDate(newValue);}}
                                 renderInput={(params) => <TextField {...params}  className={classes.datePicker}/>}
                                 maxDate={ d.setMonth(d.getMonth() +6)}
+                                disabled={disable}
                             />
                     </LocalizationProvider>
-
-                        <Button onClick={e=>getEmployeeAppointment(e)} disabled={appointmentEmployee.length===0}>לרשימת התורים</Button>
-
+                        <Button onClick={e=>getEmployeeAppointment(e)} disabled={(appointmentEmployee.length===0 || !!!appointmentDate) || disable}>לרשימת התורים</Button>
+                        {disable &&
+                            <>
                         <Select
                         className={classes.select}
                         value={appointmentTime}
@@ -192,10 +237,14 @@ return(
                                 key={i}
                                 value={appointment}>
                                 {appointment}
-                                {/*change to start time */}
                             </MenuItem>
                         ))}
                     </Select>
+                        <Button onClick={e=>makeAppointment(e)} disabled={appointmentTime.length===0} >לקביעת תור </Button>
+                                <Button onClick={e=>setDisable(false)} >חזרה לבחירת נתונים  </Button>
+
+                            </>
+                        }
                     </VBox>
                 </Typography>
             </CardContent>
@@ -215,6 +264,8 @@ return(
                 </CardContent>
             </Collapse>
         </Card>
+      <Link to ={"/personalPage"}>לתורים שלי </Link>
+
     </VBox>
 )
 

@@ -1,20 +1,24 @@
 import './App.css';
 
-import React,{useLayoutEffect} from "react";
+import React, {useEffect, useLayoutEffect, useState} from "react";
 import rtlPlugin from 'stylis-plugin-rtl';
 import createCache from '@emotion/cache';
 import { prefixer } from 'stylis';
 import { CacheProvider } from '@emotion/react';
 import { StylesProvider } from '@material-ui/core/styles';
 
-import {BrowserRouter} from 'react-router-dom'
+import {BrowserRouter, Redirect} from 'react-router-dom'
 import {Route} from "react-router";
-import Login from "./components/Login"
+
 import HomePage from "./pages/HomePage";
-import RegisterPage from "./pages/RegisterPage"
+import PersonalPage from "./pages/PersonalPage"
 import MainPage from "./pages/MainPage"
+import Cookies from "universal-cookie/es6";
+import axios from "axios";
 
 function App() {
+
+    const[loggedIn ,setLoggedIn] = useState(false)
 
   useLayoutEffect(() => {
     document.body.setAttribute("dir", "rtl");
@@ -24,19 +28,41 @@ function App() {
     stylisPlugins: [prefixer, rtlPlugin]
   });
 
+    useEffect(()=>{
+
+
+        const cookies =new Cookies()
+        const token =cookies.get("token")
+        if(token && token.length >0){
+            setLoggedIn(true)
+
+        }
+
+    },[])
   return (
       <StylesProvider>
         <CacheProvider value={cacheRtl}>
-          <BrowserRouter>
-
-              <Route path={"/"} component={HomePage}/>
-              <Route path={"/registerPage"} component={RegisterPage}/>
-              <Route path={"/mainPage"} component={MainPage}/>
-
-          </BrowserRouter>
+            {loggedIn ?    <BrowserRouter>
+                    <Redirect to={"/mainPage"}/>
+                    <Route path={"/mainPage"} component={MainPage}/>
+                <Route path={"/personalPage"} component={PersonalPage}/>
+            </BrowserRouter>:
+                <BrowserRouter>
+                    <Route path={"/"} component={HomePage}/>
+                </BrowserRouter>
+            }
+          {/*<BrowserRouter>*/}
+          {/*    <Route path={"/"} component={HomePage}/>*/}
+          {/*    <Route path={"/mainPage"} component={MainPage}/>*/}
+          {/*    <Route path={"/personalPage"} component={PersonalPage}/>*/}
+          {/*</BrowserRouter>*/}
         </CacheProvider>
       </StylesProvider>
   );
 }
 
 export default App;
+
+
+// if (cookies.get("token") && cookies.get("token").length > 0) {
+//     this.setState({loggedIn: true})
