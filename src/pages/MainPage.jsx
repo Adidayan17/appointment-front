@@ -67,11 +67,11 @@ const MainPage =()=>{
     const [appointmentTime, setAppointmentTime] =useState("");
     const [appointmentDate, setAppointmentDate] =useState("");
     const [disable, setDisable] =useState(false);
+    const [chosenFile ,setChosenFile]= useState(" ")
 
     const [cardInfo ,setCardInfo] = useState({title: " ", image :" ", details : " ", appointments :[] });
     let d = new Date();
-    let formatDate
-
+    let formatDate ,howManyAppointmentsForClient
 
 
 
@@ -84,13 +84,13 @@ const MainPage =()=>{
         setAppointmentTime("");
         setShowCard(true);
        setDisable(false)
+        setChosenFile(field)
         axios.get ("http://127.0.0.1:8989/get-employees-by-role",{
             params:{
                 role: field}
         }).then((response)=> {
             setEmployeeList(response.data)
         })
-
         switch (field) {
             case "hair stylist" :
                 setListAvailableAppointment(["08:00","08:30","09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","14:00","14:30","17:00" ])
@@ -135,17 +135,13 @@ const MainPage =()=>{
                 response.data.map((appointment) =>
                     temp.push(appointment.startTime)
                 )
-                const now =new Date().getHours()
 
-                console.log(now )
-                console.log(parseInt("10:00")>now)
                 temp.map((temp) => {
                         return (
                             results = results.filter(time =>{
                                 return ( time !== temp)
                             })
                         )
-
 
 
                 })
@@ -156,20 +152,43 @@ const MainPage =()=>{
 
 
     }
+    const checkHowManyAppointments = ()=>{
+        const cookies = new Cookies()
+        const token = cookies.get("token")
+         axios.get("http://127.0.0.1:8989/get-clients-appointments-by-role", {
+            params:{ token:token , role:chosenFile}})
+            .then((response)=>{
+                console.log(response.data)
+                howManyAppointmentsForClient= response.data.length ;
+
+                makeAppointment()
+            })
+
+
+    }
+
+
 
     const makeAppointment =()=>{
-        let data = new FormData();
-        setDisable(false)
-        dateChange()
-        const cookies =new Cookies()
-        const token =cookies.get("token")
-        data.append("token",token )
-        data.append("employeeId",appointmentEmployee.id )
-        data.append("date",formatDate)
-        data.append("startTime",appointmentTime)
-        axios.post("http://127.0.0.1:8989/add-appointment",data).then((response)=>{
-          alert(" התור נקבע בהצלחה ")
-        })
+        console.log("the len is" +howManyAppointmentsForClient)
+         if(howManyAppointmentsForClient < 1 ){
+            let data = new FormData();
+            setDisable(false)
+            dateChange()
+            const cookies =new Cookies()
+            const token =cookies.get("token")
+            data.append("token",token )
+            data.append("employeeId",appointmentEmployee.id )
+            data.append("date",formatDate)
+            data.append("startTime",appointmentTime)
+            axios.post("http://127.0.0.1:8989/add-appointment",data).then((response)=>{
+                alert(" התור נקבע בהצלחה ")
+            })
+        }else {
+            alert("יש לך כבר תור לתחום זה , אם ברצונך לקבוע תור יש לבטל תור קיים או להתקשר למכון היופי , תודה על ההבנה  ")
+
+        }
+
     }
 
 
@@ -240,7 +259,7 @@ return(
                             </MenuItem>
                         ))}
                     </Select>
-                        <Button onClick={e=>makeAppointment(e)} disabled={appointmentTime.length===0} >לקביעת תור </Button>
+                        <Button onClick={e=>checkHowManyAppointments()} disabled={appointmentTime.length===0} >לקביעת תור </Button>
                                 <Button onClick={e=>setDisable(false)} >חזרה לבחירת נתונים  </Button>
 
                             </>

@@ -52,9 +52,10 @@ const PersonalPage=()=>{
             <HBox className={classes.homePage}>
                 <Typography className={classes.title} >הפגישות שלי</Typography>
             </HBox>
-            {appointmentList.map((appointment) => {
+            {appointmentList.map((appointment,i) => {
                 return(
                 <Appointment
+                    key={i}
                     appointment={appointment}
                     setAgree={setAgree}/>
                 )})
@@ -86,6 +87,7 @@ const Appointment = ({appointment,setAgree})=>{
         <Card>
             <VBox>
                 <Typography className={classes.title} >פגישה ל{appointment.employee.employeeName}</Typography>
+                <Typography >לתחום : {appointment.employee.role}</Typography>
                 <Typography >נקבעה לתאריך : {appointment.date}</Typography>
                 <Typography >בשעה : {appointment.startTime}</Typography>
                 <Button onClick={e=> setShowDialog(true)}>לביטול התור </Button>
