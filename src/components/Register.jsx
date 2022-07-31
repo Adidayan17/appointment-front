@@ -1,5 +1,6 @@
 import React, {useState} from "react";
-import {makeStyles, TextField, Button, Typography} from "@material-ui/core";
+import {makeStyles} from "@mui/styles"
+import {TextField, Button, Typography} from "@mui/material";
 import {VBox} from "../sharedComponents/CustomBoxs";
 
 import Dialog from '@mui/material/Dialog';
@@ -11,21 +12,26 @@ import {Redirect} from "react-router";
 
 
 const useStyles = makeStyles(() => ({
-        registerPage: {
-            alignItems: "center"
-        },
-        title: {
-            color: "#3f51b5",
-            fontSize: "2rem",
-            fontWeight: "bold",
-            alignItems: "center"
-        },
         RemoveTextFieldNumberArrow: {
             '&.MuiOutlinedInput-input': {
                 '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
                     '-webkit-appearance': 'none !important'
                 }
             }
+        },
+        field:{
+            margin:"0.7rem !important"
+        },
+        title: {
+            color:"#ff93b0 !important",
+            fontSize: "2rem  !important" ,
+            fontWeight: "bold  !important",
+            alignItems: "center  !important"
+
+        },spaceBetween:{
+            alignItems:"center  !important",
+            justifyContent:"space-between  !important",
+
         },
     }
 ));
@@ -73,37 +79,40 @@ const Register = ({setRegister}) => {
 
 
     return (
-        <VBox className={classes.registerPage}>
+        <VBox >
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle><Typography className={classes.title}> הרשמה </Typography></DialogTitle>
                 <DialogContent>
 
                     <TextField
                         autoFocus
+                        className={` ${classes.field}`}
                         label="שם מלא"
                         type="text"
                         value={user.clientName}
                         onChange={e => setUser({...user, clientName: e.target.value})}
-                        variant={"outlined"}
+                        variant={"standard"}
                     />
                     <TextField
-                        className={classes.RemoveTextFieldNumberArrow}
+                        className={`${classes.RemoveTextFieldNumberArrow} ${classes.field}`}
                         label="מספר טלפון"
                         type="number"
                         value={user.phoneNumber}
                         onChange={e => setUser({...user, phoneNumber: e.target.value})}
                         error={phoneError}
                         helperText={phoneError && "מספר טלפון לא תקין "}
+                        variant={"standard"}
 
                     />
                     <TextField
+                        className={`${classes.field}`}
                         label="סיסמה"
                         type="text"
                         value={user.password}
                         onChange={e => setUser({...user, password: e.target.value})}
                         error={passwordError}
-                        helperText={passwordError && "סיסמה צריכה להכיל 8 תווים לפחות אות אחת ומספר אחד"}
-
+                        helperText={ "סיסמה צריכה להכיל 8 תווים לפחות אות אחת ומספר אחד"}
+                        variant={"standard"}
                     />
                 </DialogContent>
                 <DialogActions>

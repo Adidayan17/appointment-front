@@ -1,5 +1,6 @@
 import React, {useState} from "react";
-import {makeStyles, Typography,TextField,Button} from "@material-ui/core";
+import {makeStyles} from "@mui/styles"
+import {Typography,TextField,Button} from "@mui/material";
 import {VBox,HBox} from "../sharedComponents/CustomBoxs";
 import Cookies from "universal-cookie/es6";
 
@@ -20,16 +21,20 @@ const useStyles = makeStyles(() => ({
                     '-webkit-appearance': 'none !important'
                 }
             }
-        },   title: {
-            color: "#3f51b5",
-            fontSize: "2rem",
-            fontWeight: "bold",
-            alignItems: "center"
         },
-        dialog:{
+        field:{
+           margin:"0.7rem !important"
+        },
+        title: {
+            color:"#ff93b0 !important",
+            fontSize: "2rem  !important" ,
+            fontWeight: "bold  !important",
+            alignItems: "center  !important"
 
-        }
-
+        },spaceBetween:{
+            alignItems:"center  !important",
+            justifyContent:"space-between  !important",
+        },
     }
 ));
 
@@ -54,37 +59,39 @@ const Login=({setLogin})=>{
                 setSuccess(true)
                 setLogin(false)
                 window.location.reload();
-
             }
             else {
                 alert("שם משתמש או סיסמא שגויים")
             }
-
         })
     }
 
     return(
         <VBox>
             {success&& <Redirect to={"/mainPage"}/>}
-            <Dialog open={open} onClose={handleClose} className={classes.dialog}>
+            <Dialog open={open} onClose={handleClose} >
                 <DialogTitle><Typography className={classes.title} >הזן פרטים</Typography></DialogTitle>
                 <DialogContent>
+                    <HBox className={classes.spaceBetween}>
                     <TextField
                         autoFocus
-                        className={classes.RemoveTextFieldNumberArrow}
+                        className={`${classes.RemoveTextFieldNumberArrow} ${classes.field}`}
                         label="מספר טלפון"
                         type="number"
                         value = {phoneNumber}
                         onChange={e=>setPhoneNumber(e.target.value)}
-
+                        variant={"standard"}
                     />
                     <TextField
+                        className={`${classes.RemoveTextFieldNumberArrow} ${classes.field}`}
                         label="סיסמה"
                         type="text"
                         value = {password}
                         onChange={e=>setPassword(e.target.value)}
+                        variant={"standard"}
 
                     />
+                    </HBox>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={e=>login()}>התחבר</Button>
