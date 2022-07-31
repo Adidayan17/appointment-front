@@ -98,7 +98,7 @@ const MainPage = () => {
     const [cardInfo, setCardInfo] = useState({title: " ", image: " ", details: " ", appointments: []});
     const [token, setToken] = useState("")
     let d = new Date();
-    let formatDate, howManyAppointmentsForClient
+    let  howManyAppointmentsForClient
 
     useEffect(() => {
 
@@ -144,21 +144,22 @@ const MainPage = () => {
                 break;
         }
     }
-    const dateChange = () => {
-        const date = appointmentDate
+    const dateChange = (date) => {
         const yyyy = date.getFullYear();
         let mm = date.getMonth() + 1;
         let dd = date.getDate();
         if (dd < 10) dd = '0' + dd;
         if (mm < 10) mm = '0' + mm;
-        formatDate = dd + '/' + mm + '/' + yyyy
+        const formatDate = dd + '/' + mm + '/' + yyyy
+        return formatDate
     }
     const getEmployeeAppointment = (e) => {
         setAppointmentTime("")
         let temp = [], results = listAvailableAppointment
-
-        dateChange()
-
+        const currentDate = new Date();
+        const todayFormatDate = dateChange(currentDate )
+        const hours = currentDate.getHours().toString()
+        const formatDate=  dateChange(appointmentDate)
         setDisable(true)
         axios.get("http://127.0.0.1:8989/get-employees-appointments", {
             params: {
@@ -178,9 +179,17 @@ const MainPage = () => {
 
 
             })
-            setCardInfo({...cardInfo, appointments: results});
 
+            if(todayFormatDate===formatDate ){
+
+            results = results.filter(time => {
+                return (parseInt(time)>parseInt(hours))
+            })
+            }
+
+            setCardInfo({...cardInfo, appointments: results});
         })
+
 
 
     }
@@ -200,7 +209,7 @@ const MainPage = () => {
         if (howManyAppointmentsForClient < 1) {
             let data = new FormData();
             setDisable(false)
-            dateChange()
+           const formatDate=  dateChange(appointmentDate)
             data.append("token", token)
             data.append("employeeId", appointmentEmployee.id)
             data.append("date", formatDate)
