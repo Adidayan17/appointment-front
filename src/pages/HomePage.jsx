@@ -11,8 +11,6 @@ const useStyles = makeStyles(() => ({
         allPage:{
             alignItems:"center",
             justifyContent:"center",
-            background:"#fae1e1",
-            height:"55rem"
         },
         homePage:{
             alignItems:"center",

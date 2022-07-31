@@ -14,7 +14,7 @@ import HomePage from "./pages/HomePage";
 import PersonalPage from "./pages/PersonalPage"
 import MainPage from "./pages/MainPage"
 import Cookies from "universal-cookie/es6";
-import axios from "axios";
+
 
 function App() {
 
@@ -39,6 +39,7 @@ function App() {
 
     },[])
   return (
+      <div className={`${"App"} ${"body"}`}>
       <StylesProvider>
         <CacheProvider value={cacheRtl}>
             {loggedIn ?    <BrowserRouter>
@@ -57,6 +58,7 @@ function App() {
           {/*</BrowserRouter>*/}
         </CacheProvider>
       </StylesProvider>
+      </div>
   );
 }
 

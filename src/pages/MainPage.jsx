@@ -21,7 +21,6 @@ import HAIR from '../assets/HAIR.jpg'
 import Nails from '../assets/nails.jpg'
 import Beauty from '../assets/beauty.jpg'
 import Cookies from "universal-cookie/es6";
-
 import {NavLink} from "react-router-dom";
 
 
@@ -29,8 +28,6 @@ const useStyles = makeStyles(() => ({
         mainPage: {
             alignItems: "center",
             justifyContent: "center",
-            background: "#fae1e1",
-            height: "50rem"
         },
         title: {
             color: "#ff93b0 !important",
@@ -47,8 +44,8 @@ const useStyles = makeStyles(() => ({
         },
         card: {
             width: "45rem !important",
-            height:"70rem !important",
-            borderRadius:"50px"
+            height: "max-content !important",
+            borderRadius: "50px"
         },
         select: {
             width: "12rem"
@@ -61,16 +58,21 @@ const useStyles = makeStyles(() => ({
             alignItems: "center !important",
             justifyContent: "space-between !important",
         },
-        buttons:{
-            background:"#ff93b0",
-            color:"#ffffff",
-            margin:"0.4rem",
-        },logOut:{
-            marginRight:"70rem"
-        },myAppo:{
-            textDecoration:"none !important",
-            color:"#ffffff !important"
+        buttons: {
+            background: "#ff93b0",
+            color: "#ffffff",
+            margin: "0.4rem",
+        },
+        myAppo: {
+            textDecoration: "none !important",
+            color: "#ffffff !important"
+        }, topButtons: {
+            marginRight: "70rem"
+        }, calender: {
+            height: "5rem !important",
+            width: "5rem !important",
         }
+
     }
 ));
 
@@ -98,10 +100,9 @@ const MainPage = () => {
     const [cardInfo, setCardInfo] = useState({title: " ", image: " ", details: " ", appointments: []});
     const [token, setToken] = useState("")
     let d = new Date();
-    let  howManyAppointmentsForClient
+    let howManyAppointmentsForClient
 
     useEffect(() => {
-
         const cookies = new Cookies();
         setToken(cookies.get("token"))
 
@@ -132,24 +133,33 @@ const MainPage = () => {
         switch (field) {
             case "hair stylist" :
                 setListAvailableAppointment(["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00"])
-                setCardInfo({title: "מספרה  ", image: HAIR, details: "סלון יופי שמעניק מדי יום ללקוחותיו מגוון רחב של טיפולים קוסמטיים שונים וחדשניים. בין קהל הלקוחות נמנים גברים ונשים הזוכים ליחס המקצועי של עובדי המקום. מעבר למקצועיות הבלתי מתפשרת, אי אפשר שלא לחוש באווירה המשפחתית והחמה המייחדת את הטיפול במקום והמשלבת בין יחס אישי והבנת הלקוח לבין טיפול מהיר, זמין ואיכותי. לפרטים נוספים ניתן לפנות בטלפון : 08-6715665 ", appointments: []})
+                setCardInfo({
+                    title: "מספרה  ",
+                    image: HAIR,
+                    details: "סלון יופי שמעניק מדי יום ללקוחותיו מגוון רחב של טיפולים קוסמטיים שונים וחדשניים. בין קהל הלקוחות נמנים גברים ונשים הזוכים ליחס המקצועי של עובדי המקום. מעבר למקצועיות הבלתי מתפשרת, אי אפשר שלא לחוש באווירה המשפחתית והחמה המייחדת את הטיפול במקום והמשלבת בין יחס אישי והבנת הלקוח לבין טיפול מהיר, זמין ואיכותי. לפרטים נוספים ניתן לפנות בטלפון : 08-6715665 ",
+                    appointments: []
+                })
                 break;
             case "nail artist" :
                 setListAvailableAppointment(["08:00", "09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "16:00", "17:00"])
-                setCardInfo({title: "ציפורניים  ", image: Nails, details: "סלון יופי שמעניק מדי יום ללקוחותיו מגוון רחב של טיפולים קוסמטיים שונים וחדשניים. בין קהל הלקוחות נמנים גברים ונשים הזוכים ליחס המקצועי של עובדי המקום. מעבר למקצועיות הבלתי מתפשרת, אי אפשר שלא לחוש באווירה המשפחתית והחמה המייחדת את הטיפול במקום והמשלבת בין יחס אישי והבנת הלקוח לבין טיפול מהיר, זמין ואיכותי. לפרטים נוספים ניתן לפנות בטלפון : 08-6715665    ", appointments: []})
+                setCardInfo({
+                    title: "ציפורניים  ",
+                    image: Nails,
+                    details: "סלון יופי שמעניק מדי יום ללקוחותיו מגוון רחב של טיפולים קוסמטיים שונים וחדשניים. בין קהל הלקוחות נמנים גברים ונשים הזוכים ליחס המקצועי של עובדי המקום. מעבר למקצועיות הבלתי מתפשרת, אי אפשר שלא לחוש באווירה המשפחתית והחמה המייחדת את הטיפול במקום והמשלבת בין יחס אישי והבנת הלקוח לבין טיפול מהיר, זמין ואיכותי. לפרטים נוספים ניתן לפנות בטלפון : 08-6715665    ",
+                    appointments: []
+                })
                 break;
             case "eyebrow artist" :
                 setListAvailableAppointment(["08:00", "08:15", "08:30", "08:45", "09:00", "09:15", "09:30", "09:45", "10:00", "10:15", "10:30", "10:45", "11:00", "11:15", "11:30", "11:45", "12:00", "12:15", "12:30", "12:45", "14:00", "14:15", "14:30", "14:45", "15:00", "15:15", "15:30", "15:45", "16:00", "16:15", "16:30", "16:45", "17:00"])
-                setCardInfo({title: "שפם וגבות   ", image: Beauty, details: "סלון יופי שמעניק מדי יום ללקוחותיו מגוון רחב של טיפולים קוסמטיים שונים וחדשניים. בין קהל הלקוחות נמנים גברים ונשים הזוכים ליחס המקצועי של עובדי המקום. מעבר למקצועיות הבלתי מתפשרת, אי אפשר שלא לחוש באווירה המשפחתית והחמה המייחדת את הטיפול במקום והמשלבת בין יחס אישי והבנת הלקוח לבין טיפול מהיר, זמין ואיכותי. לפרטים נוספים ניתן לפנות בטלפון : 08-6715665   ", appointments: []})
+                setCardInfo({
+                    title: "שפם וגבות   ",
+                    image: Beauty,
+                    details: "סלון יופי שמעניק מדי יום ללקוחותיו מגוון רחב של טיפולים קוסמטיים שונים וחדשניים. בין קהל הלקוחות נמנים גברים ונשים הזוכים ליחס המקצועי של עובדי המקום. מעבר למקצועיות הבלתי מתפשרת, אי אפשר שלא לחוש באווירה המשפחתית והחמה המייחדת את הטיפול במקום והמשלבת בין יחס אישי והבנת הלקוח לבין טיפול מהיר, זמין ואיכותי. לפרטים נוספים ניתן לפנות בטלפון : 08-6715665   ",
+                    appointments: []
+                })
                 break;
         }
     }
-
-
-
-
-
-
 
     const dateChange = (date) => {
         const yyyy = date.getFullYear();
@@ -164,9 +174,9 @@ const MainPage = () => {
         setAppointmentTime("")
         let temp = [], results = listAvailableAppointment
         const currentDate = new Date();
-        const todayFormatDate = dateChange(currentDate )
+        const todayFormatDate = dateChange(currentDate)
         const hours = currentDate.getHours().toString()
-        const formatDate=  dateChange(appointmentDate)
+        const formatDate = dateChange(appointmentDate)
         setDisable(true)
         axios.get("http://127.0.0.1:8989/get-employees-appointments", {
             params: {
@@ -183,40 +193,30 @@ const MainPage = () => {
                         return (time !== temp)
                     })
                 )
-
-
             })
-
-            if(todayFormatDate===formatDate ){
-
-            results = results.filter(time => {
-                return (parseInt(time)>parseInt(hours))
-            })
+            if (todayFormatDate === formatDate) {
+                results = results.filter(time => {
+                    return (parseInt(time) > parseInt(hours))
+                })
             }
-
             setCardInfo({...cardInfo, appointments: results});
         })
-
-
-
     }
+
     const checkHowManyAppointments = () => {
         axios.get("http://127.0.0.1:8989/get-clients-appointments-by-role", {
             params: {token: token, role: chosenFile}
         })
             .then((response) => {
                 howManyAppointmentsForClient = response.data.length;
-
                 makeAppointment()
             })
-
-
     }
     const makeAppointment = () => {
         if (howManyAppointmentsForClient < 1) {
             let data = new FormData();
             setDisable(false)
-           const formatDate=  dateChange(appointmentDate)
+            const formatDate = dateChange(appointmentDate)
             data.append("token", token)
             data.append("employeeId", appointmentEmployee.id)
             data.append("date", formatDate)
@@ -226,24 +226,23 @@ const MainPage = () => {
             })
         } else {
             alert("יש לך כבר תור לתחום זה , אם ברצונך לקבוע תור יש לבטל תור קיים או להתקשר למכון היופי , תודה על ההבנה  ")
-
         }
-
     }
-
-
     return (
         <VBox className={classes.mainPage}>
-            <HBox>
-            <Button onClick={e => logOut()} className={`${classes.buttons} `}>התנתק </Button>
-            <Button className={`${classes.buttons} ${classes.logOut} `}><NavLink to={"/personalPage"} className={classes.myAppo} > התורים שלי</NavLink>   </Button>
+            <HBox className={classes.topButtons}>
+                <Button onClick={e => logOut()} className={`${classes.buttons} `}>התנתק </Button>
+                <Button className={`${classes.buttons} `}><NavLink to={"/personalPage"}
+                                                                   className={classes.myAppo}> התורים שלי</NavLink>
+                </Button>
             </HBox>
             <Typography className={classes.title}>מערכת לקביעת תורים</Typography>
-            <Typography className={classes.subTitle}> בחר/י את השירות הרצוי </Typography>
+            <Typography className={classes.subTitle}> תודה שבחרתם בנו לטיפולי היופי שלכם , אנא בחרו את השירות
+                הרצוי </Typography>
             <HBox className={classes.spaceBetween}>
-                <Button onClick={e => infoCard(e, "hair stylist")} className={classes.buttons} >מספרה</Button>
-                <Button onClick={e => infoCard(e, "nail artist")} className={classes.buttons} >ציפורניים</Button>
-                <Button onClick={e => infoCard(e, "eyebrow artist")} className={classes.buttons} >שפם / גבות </Button>
+                <Button onClick={e => infoCard(e, "hair stylist")} className={classes.buttons}>מספרה</Button>
+                <Button onClick={e => infoCard(e, "nail artist")} className={classes.buttons}>ציפורניים</Button>
+                <Button onClick={e => infoCard(e, "eyebrow artist")} className={classes.buttons}>שפם / גבות </Button>
             </HBox>
             <Card className={classes.card} style={{visibility: showCard ? "visible" : "hidden"}}>
                 <CardHeader
@@ -310,7 +309,6 @@ const MainPage = () => {
                                 <Button onClick={e => checkHowManyAppointments()}
                                         disabled={appointmentTime.length === 0}>לקביעת תור </Button>
                                 <Button onClick={e => setDisable(false)}>חזרה לבחירת נתונים </Button>
-
                             </>
                             }
                         </VBox>
@@ -332,9 +330,6 @@ const MainPage = () => {
                     </CardContent>
                 </Collapse>
             </Card>
-
-
-
         </VBox>
     )
 
