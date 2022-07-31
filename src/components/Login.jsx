@@ -53,6 +53,8 @@ const Login=({setLogin})=>{
             if(response.data) {
                 setSuccess(true)
                 setLogin(false)
+                window.location.reload();
+
             }
             else {
                 alert("שם משתמש או סיסמא שגויים")

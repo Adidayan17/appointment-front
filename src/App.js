@@ -30,7 +30,6 @@ function App() {
 
     useEffect(()=>{
 
-
         const cookies =new Cookies()
         const token =cookies.get("token")
         if(token && token.length >0){

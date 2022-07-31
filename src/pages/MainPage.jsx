@@ -68,12 +68,22 @@ const MainPage =()=>{
     const [appointmentDate, setAppointmentDate] =useState("");
     const [disable, setDisable] =useState(false);
     const [chosenFile ,setChosenFile]= useState(" ")
-
     const [cardInfo ,setCardInfo] = useState({title: " ", image :" ", details : " ", appointments :[] });
     let d = new Date();
-    let formatDate ,howManyAppointmentsForClient
+    let formatDate ,howManyAppointmentsForClient , cookies
 
+    useEffect(()=>{
+         cookies = new Cookies();
+        console.log(cookies.get("token"))
 
+    },[])
+
+    const logOut=()=>{
+
+        const cookies = new Cookies();
+        cookies.remove("token");
+        window.location.reload();
+    }
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -284,6 +294,7 @@ return(
             </Collapse>
         </Card>
       <Link to ={"/personalPage"}>לתורים שלי </Link>
+        <Button onClick={e=>logOut()}>התנתק </Button>
 
     </VBox>
 )
